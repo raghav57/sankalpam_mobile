@@ -1,98 +1,124 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { SankalpamColors } from '@/constants/sankalpam';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function WelcomeScreen() {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+        <View style={styles.card}>
+          <View accessible={false} style={styles.emblem}>
+            <View style={styles.flame} />
+            <View style={styles.lamp} />
+          </View>
+          <Text accessibilityRole="header" style={styles.title}>
+            Sankalpam
+          </Text>
+          <Text style={styles.subtitle}>Your Sacred Rituals, Simplified</Text>
+          <View style={styles.actions}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityHint="Browse available pooja services"
+              onPress={() => router.push('/poojas')}
+              style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
+              <Text style={styles.buttonLabel}>Explore Poojas</Text>
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    backgroundColor: SankalpamColors.cream,
   },
-  heroSection: {
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+  },
+  card: {
+    width: '100%',
+    flexShrink: 0,
+    maxWidth: 440,
+    alignItems: 'center',
+    backgroundColor: SankalpamColors.white,
+    borderColor: SankalpamColors.border,
+    borderWidth: 1,
+    borderRadius: 28,
+    paddingHorizontal: 24,
+    paddingVertical: 48,
+  },
+  emblem: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: SankalpamColors.cream,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    gap: 5,
+    marginBottom: 28,
+  },
+  flame: {
+    width: 14,
+    height: 22,
+    borderRadius: 10,
+    borderTopRightRadius: 0,
+    backgroundColor: SankalpamColors.saffron,
+    transform: [{ rotate: '20deg' }],
+  },
+  lamp: {
+    width: 36,
+    height: 14,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
+    backgroundColor: SankalpamColors.saffron,
   },
   title: {
+    color: SankalpamColors.saffron,
+    fontSize: 36,
+    fontWeight: '700',
     textAlign: 'center',
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    color: SankalpamColors.text,
+    fontSize: 17,
+    lineHeight: 26,
+    textAlign: 'center',
+    marginTop: 12,
   },
-  stepContainer: {
-    gap: Spacing.three,
+  actions: {
     alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+    gap: 14,
+    marginTop: 40,
+  },
+  button: {
+    width: '100%',
+    minHeight: 54,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 14,
+    backgroundColor: SankalpamColors.saffron,
+  },
+  buttonLabel: {
+    color: SankalpamColors.white,
+    fontSize: 17,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });

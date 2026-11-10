@@ -1,56 +1,64 @@
-# Welcome to your Expo app 👋
+# Sankalpam mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo SDK 58 / React Native / TypeScript, with Expo Router. The welcome screen opens `/poojas`, a read-only catalog backed by `GET /api/mobile/poojas`.
 
-## Get started
+## Configure the backend address
 
-1. Install dependencies
+1. Run `ipconfig` on the Windows laptop. Find the **IPv4 Address** under the active Wi-Fi adapter (not a VPN, virtual adapter, or default gateway).
+2. Copy `.env.example` to `.env.local` in this mobile project:
 
-   ```bash
-   npm install
+   ```powershell
+   Copy-Item .env.example .env.local
    ```
 
-2. Start the app
+3. Edit `.env.local`, replacing the placeholder:
 
-   ```bash
-   npx expo start
+   ```dotenv
+   EXPO_PUBLIC_API_BASE_URL=http://YOUR_LAPTOP_LAN_IP:3000
    ```
 
-In the output, you'll find options to open the app in a
+Use the backend origin only, without `/api` or `/api/mobile/poojas`. Do not use `localhost`, `127.0.0.1`, or `0.0.0.0` as the phone's host. `0.0.0.0` is a server listening address, not a destination. No LAN IP is committed to this project.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+`EXPO_PUBLIC_` variables are visible in the app bundle. Never put database URLs, passwords, or other secrets in them. See [Expo environment variables](https://docs.expo.dev/guides/environment-variables/). `.env.local` is already ignored by Git. Restart Expo and fully reload Expo Go after changing this value.
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Start both development servers
 
-## Get a fresh project
+Keep these running in separate PowerShell terminals.
 
-When you're ready, run:
+Backend (uses the existing backend `.env` and Prisma connection):
 
-```bash
-npm run reset-project
+```powershell
+cd D:\Ideas\HinduPoojaApp\sankalpam
+npm run dev -- --webpack --hostname 0.0.0.0 --port 3000
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Webpack is used because Turbopack stalled during the earlier local API test. No backend configuration changes are required.
 
-### Other setup steps
+Mobile:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```powershell
+cd D:\Ideas\HinduPoojaApp\sankalpam_mobile
+npx expo start --lan
+```
 
-## Learn more
+## Test on a physical iPhone
 
-To learn more about developing your project with Expo, look at the following resources:
+1. Connect the laptop and iPhone to the same Wi-Fi network.
+2. In iPhone Safari, open `http://YOUR_LAPTOP_LAN_IP:3000/api/mobile/poojas`. Confirm it returns JSON with a `poojas` array. This checks phone-to-backend reachability independently of Expo.
+3. Scan Expo's QR code using the iPhone Camera and open it in Expo Go. Allow local-network access if prompted.
+4. Tap **Explore Poojas**. Confirm the catalog displays the real names, descriptions, durations in minutes, and prices in INR. Use the header back button or swipe back to return to the welcome screen.
+5. Stop the backend, leave and reopen the catalog, and confirm an error and **Retry** appear (requests time out after 20 seconds). Restart the backend and tap **Retry** to recover.
+6. The loading spinner appears during requests. A successful `{ "poojas": [] }` response shows the empty state with Retry; validate this using a mock response if needed, without deleting database data.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+If Safari cannot reach the API, check the LAN IP, the backend terminal, Windows Firewall access for Node.js on the private network/port 3000, and Wi-Fi client isolation or VPN routing. If Safari works but Expo Go cannot connect, check Expo Go's iOS Local Network permission and reload the app. An Expo tunnel does not expose the backend API.
 
-## Join the community
+The catalog validates the JSON shape, handles HTTP/network/invalid-response errors, and cancels requests when leaving the screen. It never uses hardcoded pooja records or displays backend error bodies. No authentication, bookings, payments, or priest selection are included. Native mobile requests need no CORS changes; the separate Expo web preview is outside this LAN/iPhone setup.
 
-Join our community of developers creating universal apps.
+## Checks
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```powershell
+npx tsc --noEmit
+npx expo lint
+```
+
+Laptop HTTP checks and mocked API-client checks do not establish that the app works on a physical phone. Complete the steps above to verify the iPhone end to end.
