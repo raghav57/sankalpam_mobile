@@ -1,31 +1,92 @@
-import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from "expo-router";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { SankalpamColors } from '@/constants/sankalpam';
+import { SankalpamColors } from "@/constants/sankalpam";
+
+const services = [
+  {
+    id: "pooja",
+    icon: "🙏",
+    title: "Pooja Services",
+    description: "Explore traditional poojas",
+  },
+  {
+    id: "vedashirvachanam",
+    icon: "🪷",
+    title: "Vedashirvachanam",
+    description: "Receive Vedic blessings",
+  },
+  {
+    id: "dharma",
+    icon: "📖",
+    title: "Dharma Sandeha",
+    description: "Seek spiritual guidance",
+  },
+  {
+    id: "astrology",
+    icon: "☀️",
+    title: "Astrologer Booking",
+    description: "Consult an astrologer",
+  },
+] as const;
 
 export default function WelcomeScreen() {
+  function openService(id: string, title: string) {
+    if (id === "pooja") {
+      router.push("/poojas");
+      return;
+    }
+
+    Alert.alert(title, "Coming Soon! This service will be available shortly.");
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
-        <View style={styles.card}>
-          <View accessible={false} style={styles.emblem}>
-            <View style={styles.flame} />
-            <View style={styles.lamp} />
-          </View>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.content}
+      >
+        <View style={styles.header}>
           <Text accessibilityRole="header" style={styles.title}>
             Sankalpam
           </Text>
           <Text style={styles.subtitle}>Your Sacred Rituals, Simplified</Text>
-          <View style={styles.actions}>
+        </View>
+
+        <View style={styles.welcome}>
+          <Text style={styles.welcomeTitle}>Namaste! 🙏</Text>
+          <Text style={styles.welcomeText}>How can we help you today?</Text>
+        </View>
+
+        <Text style={styles.sectionTitle}>Explore Our Services</Text>
+
+        <View style={styles.grid}>
+          {services.map((service) => (
             <Pressable
+              key={service.id}
               accessibilityRole="button"
-              accessibilityHint="Browse available pooja services"
-              onPress={() => router.push('/poojas')}
-              style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
-              <Text style={styles.buttonLabel}>Explore Poojas</Text>
+              accessibilityLabel={service.title}
+              onPress={() => openService(service.id, service.title)}
+              style={({ pressed }) => [
+                styles.serviceCard,
+                pressed && styles.pressed,
+              ]}
+            >
+              <Text style={styles.serviceIcon}>{service.icon}</Text>
+              <Text style={styles.serviceTitle}>{service.title}</Text>
+              <Text style={styles.serviceDescription}>
+                {service.description}
+              </Text>
             </Pressable>
-          </View>
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -41,84 +102,85 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingHorizontal: 20,
+    paddingTop: 32,
+    paddingBottom: 40,
+    maxWidth: 600,
+    width: "100%",
+    alignSelf: "center",
   },
-  card: {
-    width: '100%',
-    flexShrink: 0,
-    maxWidth: 440,
-    alignItems: 'center',
-    backgroundColor: SankalpamColors.white,
-    borderColor: SankalpamColors.border,
-    borderWidth: 1,
-    borderRadius: 28,
-    paddingHorizontal: 24,
-    paddingVertical: 48,
-  },
-  emblem: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: SankalpamColors.cream,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-    marginBottom: 28,
-  },
-  flame: {
-    width: 14,
-    height: 22,
-    borderRadius: 10,
-    borderTopRightRadius: 0,
-    backgroundColor: SankalpamColors.saffron,
-    transform: [{ rotate: '20deg' }],
-  },
-  lamp: {
-    width: 36,
-    height: 14,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
-    backgroundColor: SankalpamColors.saffron,
+  header: {
+    alignItems: "center",
+    marginBottom: 32,
   },
   title: {
     color: SankalpamColors.saffron,
     fontSize: 36,
-    fontWeight: '700',
-    textAlign: 'center',
+    fontWeight: "700",
   },
   subtitle: {
     color: SankalpamColors.text,
+    fontSize: 15,
+    marginTop: 8,
+    textAlign: "center",
+  },
+  welcome: {
+    backgroundColor: SankalpamColors.white,
+    borderRadius: 20,
+    padding: 22,
+    borderWidth: 1,
+    borderColor: SankalpamColors.border,
+    marginBottom: 30,
+  },
+  welcomeTitle: {
+    color: SankalpamColors.saffron,
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  welcomeText: {
+    color: SankalpamColors.text,
+    fontSize: 16,
+  },
+  sectionTitle: {
+    color: SankalpamColors.text,
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 18,
+  },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  serviceCard: {
+    width: "48%",
+    minHeight: 175,
+    backgroundColor: SankalpamColors.white,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: SankalpamColors.border,
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  serviceIcon: {
+    fontSize: 30,
+    marginBottom: 12,
+  },
+  serviceTitle: {
+    color: SankalpamColors.saffron,
     fontSize: 17,
-    lineHeight: 26,
-    textAlign: 'center',
-    marginTop: 12,
+    fontWeight: "700",
+    marginBottom: 8,
   },
-  actions: {
-    alignSelf: 'stretch',
-    gap: 14,
-    marginTop: 40,
-  },
-  button: {
-    width: '100%',
-    minHeight: 54,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 14,
-    backgroundColor: SankalpamColors.saffron,
-  },
-  buttonLabel: {
-    color: SankalpamColors.white,
-    fontSize: 17,
-    fontWeight: '600',
-    textAlign: 'center',
+  serviceDescription: {
+    color: SankalpamColors.text,
+    fontSize: 13,
+    lineHeight: 19,
   },
   pressed: {
-    opacity: 0.8,
+    opacity: 0.7,
   },
 });
