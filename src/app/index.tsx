@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { SankalpamColors } from "@/constants/sankalpam";
+import { useAuth } from "@/contexts/AuthContext";
 
 const services = [
   {
@@ -39,6 +40,8 @@ const services = [
 ] as const;
 
 export default function WelcomeScreen() {
+  const { user } = useAuth();
+
   function openService(id: string, title: string) {
     if (id === "pooja") {
       router.push("/poojas");
@@ -59,6 +62,15 @@ export default function WelcomeScreen() {
             Sankalpam
           </Text>
           <Text style={styles.subtitle}>Your Sacred Rituals, Simplified</Text>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push("/account")}
+            style={{ padding: 12 }}
+          >
+            <Text style={{ color: SankalpamColors.saffron, fontSize: 16 }}>
+              {user ? "My Account" : "Sign in / Create account"}
+            </Text>
+          </Pressable>
         </View>
 
         <View style={styles.welcome}>
