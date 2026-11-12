@@ -1,6 +1,7 @@
 import { authStyles as styles } from "@/components/auth-styles";
+import { GoogleSignInButton } from "@/components/google-signin-button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Link, Redirect, router } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -27,7 +28,7 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
         accessibilityLabel="Checking session"
       />
     );
-  if (auth.user) return <Redirect href="/account" />;
+  if (auth.user) return <Redirect href="/" />;
 
   async function submit() {
     setError(null);
@@ -47,7 +48,6 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
       if (signup) await auth.signup(email.trim(), password, name.trim());
       else await auth.signin(email.trim(), password);
       setPassword("");
-      router.replace("/account");
     } catch (cause) {
       setError(
         cause instanceof Error
@@ -134,6 +134,7 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
             {auth.busy ? "Please wait…" : signup ? "Create account" : "Sign in"}
           </Text>
         </Pressable>
+        {!signup && <GoogleSignInButton />}
         {!auth.busy && (
           <Link href={signup ? "/signin" : "/signup"} style={styles.link}>
             {signup ? "Already registered? Sign in" : "Create an account"}

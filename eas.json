@@ -1,0 +1,28 @@
+{
+  "cli": {
+    "version": ">= 27.8.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "http://192.168.31.237:3000",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "28646298388-sp92m95j87vu2jqs26g6lphb5nin4nh7.apps.googleusercontent.com"
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

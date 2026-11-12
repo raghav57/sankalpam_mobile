@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   Alert,
   Pressable,
@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { GoogleSignInButton } from "@/components/google-signin-button";
+import { HomeAccountMenu } from "@/components/home-account-menu";
 import { SankalpamColors } from "@/constants/sankalpam";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -40,7 +42,8 @@ const services = [
 ] as const;
 
 export default function WelcomeScreen() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const firstName = user?.name?.trim().split(/\s+/)[0];
 
   function openService(id: string, title: string) {
     if (id === "pooja") {
@@ -62,20 +65,35 @@ export default function WelcomeScreen() {
             Sankalpam
           </Text>
           <Text style={styles.subtitle}>Your Sacred Rituals, Simplified</Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.push("/account")}
-            style={{ padding: 12 }}
-          >
-            <Text style={{ color: SankalpamColors.saffron, fontSize: 16 }}>
-              {user ? "My Account" : "Sign in / Create account"}
-            </Text>
-          </Pressable>
         </View>
 
         <View style={styles.welcome}>
-          <Text style={styles.welcomeTitle}>Namaste! 🙏</Text>
+          <Text style={styles.welcomeTitle}>
+            {user
+              ? firstName
+                ? `Welcome, ${firstName}`
+                : "Welcome to Sankalpam"
+              : "Namaste! 🙏"}
+          </Text>
+          {user && <HomeAccountMenu key={user.id} />}
           <Text style={styles.welcomeText}>How can we help you today?</Text>
+          {!user && !loading && (
+            <>
+              <Link href="/signin" asChild>
+                <Pressable accessibilityRole="link" style={styles.signInAction}>
+                  <Text style={styles.signInText}>Sign In</Text>
+                </Pressable>
+              </Link>
+              <GoogleSignInButton />
+              <View style={styles.authActions}>
+                <Link href="/signup" asChild>
+                  <Pressable accessibilityRole="link" style={styles.authAction}>
+                    <Text style={styles.authActionText}>Create Account</Text>
+                  </Pressable>
+                </Link>
+              </View>
+            </>
+          )}
         </View>
 
         <Text style={styles.sectionTitle}>Explore Our Services</Text>
@@ -153,6 +171,36 @@ const styles = StyleSheet.create({
   welcomeText: {
     color: SankalpamColors.text,
     fontSize: 16,
+  },
+  authActions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: 8,
+  },
+  signInAction: {
+    marginTop: 16,
+    minHeight: 48,
+    padding: 14,
+    borderRadius: 10,
+    backgroundColor: SankalpamColors.saffron,
+    alignItems: "center",
+  },
+  signInText: {
+    color: SankalpamColors.white,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  authAction: {
+    minHeight: 44,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    justifyContent: "center",
+  },
+  authActionText: {
+    color: SankalpamColors.saffron,
+    fontSize: 15,
+    textAlign: "center",
   },
   sectionTitle: {
     color: SankalpamColors.text,

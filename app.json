@@ -46,11 +46,27 @@
       ],
       "expo-secure-store",
       "expo-status-bar",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.28646298388-7d2q869dp8r3rc2p3u2pf6li8d7s1lc3"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "a8f11b3b-e885-4cc6-8d58-daddf5323236"
+      }
     }
   }
 }

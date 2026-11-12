@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -22,6 +22,7 @@ export default function AccountScreen() {
 
     try {
       await auth.signout();
+      router.replace("/");
     } catch {
       setError("Unable to sign out. Please try again.");
     }
