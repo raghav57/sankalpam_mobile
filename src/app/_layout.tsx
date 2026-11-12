@@ -28,14 +28,34 @@ export default function RootLayout() {
             headerShadowVisible: false,
             headerTransparent: false,
           }}
-        />{" "}
+        />
         <Stack.Screen
           name="signin"
-          options={{ headerShown: true, title: "Sign in" }}
+          options={{
+            headerShown: true,
+            title: "Sign in",
+            headerBackTitle: "Back",
+            headerStyle: {
+              backgroundColor: SankalpamColors.cream,
+            },
+            headerTintColor: SankalpamColors.saffron,
+            headerShadowVisible: false,
+            headerTransparent: false,
+          }}
         />
         <Stack.Screen
           name="signup"
-          options={{ headerShown: true, title: "Create account" }}
+          options={{
+            headerShown: true,
+            title: "Create account",
+            headerBackTitle: "Back",
+            headerStyle: {
+              backgroundColor: SankalpamColors.cream,
+            },
+            headerTintColor: SankalpamColors.saffron,
+            headerShadowVisible: false,
+            headerTransparent: false,
+          }}
         />
         <Stack.Screen
           name="poojas"

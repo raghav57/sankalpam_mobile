@@ -10,9 +10,11 @@ import {
 } from "react-native";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function AccountScreen() {
   const auth = useAuth();
+  const insets = useSafeAreaInsets();
   const [error, setError] = useState<string | null>(null);
 
   async function signout() {
@@ -26,7 +28,13 @@ export default function AccountScreen() {
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={[
+        styles.content,
+        { paddingBottom: 20 + insets.bottom },
+      ]}
+    >
       {auth.loading ? (
         <ActivityIndicator color="#B45309" />
       ) : auth.user ? (
@@ -112,7 +120,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    paddingBottom: 40,
     gap: 18,
   },
   profileCard: {
